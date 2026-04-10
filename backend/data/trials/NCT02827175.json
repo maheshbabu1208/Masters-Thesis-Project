@@ -1,0 +1,17 @@
+{
+  "id": "NCT02827175",
+  "title": "Evaluation of the Effectiveness of a Diagnostic Kit in the Etiological Diagnosis of Fevers of the Traveler",
+  "inclusion_keywords": [
+    "fevers of the traveler",
+    "infection",
+    "treatment"
+  ],
+  "exclusion_keywords": [
+    "pregnancy",
+    "severe cardiac disease"
+  ],
+  "age_min": 18,
+  "age_max": 100,
+  "source": "csv_upload",
+  "upload_date": "2026-03-30T12:13:55.040200"
+}

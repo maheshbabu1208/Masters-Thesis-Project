@@ -1,0 +1,1054 @@
+<!-- ClinicalMatch AI landing page (vanilla HTML/CSS/JS, responsive, dark + glassmorphism) -->
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClinicalMatch AI — AI-Powered Clinical Trial Matching</title>
+  <meta name="description"
+    content="Upload your patient dataset, define trial criteria, and let AI find the best clinical trial matches in seconds." />
+
+  <!-- Google Font (Inter) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: rgba(255, 255, 255, 0.06);
+      --panel-2: rgba(255, 255, 255, 0.09);
+      --border: rgba(255, 255, 255, 0.10);
+      --text: rgba(255, 255, 255, 0.92);
+      --muted: rgba(255, 255, 255, 0.68);
+      --muted-2: rgba(255, 255, 255, 0.55);
+      --accentA: #38bdf8;
+      --accentB: #6366f1;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.35);
+      --radius-xl: 26px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --container: 1160px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(56, 189, 248, 0.12), transparent 55%),
+        radial-gradient(900px 650px at 80% 25%, rgba(99, 102, 241, 0.14), transparent 60%),
+        radial-gradient(900px 900px at 50% 100%, rgba(56, 189, 248, 0.08), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.07;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+      z-index: 0;
+    }
+
+    .container {
+      width: min(var(--container), calc(100% - 48px));
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .glass {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .grad {
+      background: linear-gradient(90deg, var(--accentA), var(--accentB));
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      font-weight: 600;
+      letter-spacing: 0.1px;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, border-color 180ms ease;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+
+    .btn:active {
+      transform: translateY(0px) scale(0.99);
+    }
+
+    .btn-primary {
+      border: none;
+      background: linear-gradient(90deg, rgba(56, 189, 248, 0.95), rgba(99, 102, 241, 0.95));
+      box-shadow: 0 18px 50px rgba(56, 189, 248, 0.20);
+    }
+
+    .btn-primary::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      background: radial-gradient(600px 120px at 15% 50%, rgba(255, 255, 255, 0.35), transparent 60%);
+      opacity: 0;
+      transition: opacity 220ms ease;
+    }
+
+    .btn-primary:hover::before {
+      opacity: 1;
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: rgba(15, 23, 42, 0.58);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background:
+        radial-gradient(12px 12px at 30% 30%, rgba(255, 255, 255, 0.32), transparent 65%),
+        linear-gradient(135deg, rgba(56, 189, 248, 0.95), rgba(99, 102, 241, 0.95));
+      box-shadow: 0 16px 45px rgba(99, 102, 241, 0.22);
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .brand span {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.94);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: calc(100vh - 68px);
+      display: grid;
+      align-items: center;
+      padding: 56px 0 34px;
+      position: relative;
+    }
+
+    #moleculeCanvas {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.12fr 0.88fr;
+      gap: 32px;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accentA), var(--accentB));
+      box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.12);
+    }
+
+    h1 {
+      margin: 18px 0 10px;
+      font-size: clamp(40px, 4.4vw, 62px);
+      letter-spacing: -0.03em;
+      line-height: 1.03;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: clamp(15px, 1.35vw, 18px);
+      max-width: 56ch;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 12px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    /* Mock dashboard */
+    .mock {
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mock::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      background:
+        radial-gradient(600px 300px at 20% 10%, rgba(56, 189, 248, 0.22), transparent 60%),
+        radial-gradient(600px 320px at 80% 25%, rgba(99, 102, 241, 0.24), transparent 60%);
+      z-index: 0;
+    }
+
+    .mock-inner {
+      position: relative;
+      z-index: 1;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(10, 14, 28, 0.35);
+      overflow: hidden;
+    }
+
+    .mock-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .traffic {
+      display: inline-flex;
+      gap: 7px;
+    }
+
+    .traffic i {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+      opacity: 0.9;
+    }
+
+    .traffic i:nth-child(1) {
+      background: rgba(248, 113, 113, 0.95);
+    }
+
+    .traffic i:nth-child(2) {
+      background: rgba(251, 191, 36, 0.95);
+    }
+
+    .traffic i:nth-child(3) {
+      background: rgba(34, 197, 94, 0.95);
+    }
+
+    .mock-title {
+      font-weight: 700;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .mock-body {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .mini {
+      border-radius: 16px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .mini h4 {
+      margin: 0;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.78);
+      font-weight: 700;
+    }
+
+    .mini .num {
+      margin-top: 10px;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .mini .hint {
+      margin-top: 6px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.58);
+    }
+
+    .chart {
+      height: 132px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chart::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(56, 189, 248, 0.55), rgba(99, 102, 241, 0.55));
+      opacity: 0.10;
+    }
+
+    .spark {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      top: 10px;
+      opacity: 0.95;
+    }
+
+    /* Sections */
+    section {
+      padding: 62px 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .section-title {
+      font-size: 26px;
+      letter-spacing: -0.02em;
+      margin: 0 0 10px;
+    }
+
+    .section-subtitle {
+      margin: 0 0 26px;
+      color: var(--muted);
+      max-width: 70ch;
+    }
+
+    /* Stats strip */
+    .stats {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat {
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(255, 255, 255, 0.04);
+      position: relative;
+      overflow: hidden;
+      transition: transform 200ms ease, border-color 200ms ease, background 200ms ease;
+    }
+
+    .stat:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.25);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .stat .value {
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin: 0;
+    }
+
+    .stat .label {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* Features */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .feature {
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+      transition: transform 200ms ease, border-color 200ms ease, background 200ms ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-3px);
+      border-color: rgba(56, 189, 248, 0.22);
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background:
+        radial-gradient(12px 12px at 30% 30%, rgba(255, 255, 255, 0.28), transparent 70%),
+        linear-gradient(135deg, rgba(56, 189, 248, 0.6), rgba(99, 102, 241, 0.55));
+      box-shadow: 0 18px 50px rgba(56, 189, 248, 0.14);
+    }
+
+    .feature h3 {
+      margin: 14px 0 8px;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+    }
+
+    .feature p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    /* How it works */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .step {
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step .num {
+      font-weight: 900;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.78);
+      letter-spacing: 0.12em;
+    }
+
+    .step h3 {
+      margin: 10px 0 6px;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .step::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(500px 220px at 20% 10%, rgba(56, 189, 248, 0.20), transparent 60%),
+        radial-gradient(500px 220px at 80% 40%, rgba(99, 102, 241, 0.18), transparent 60%);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    /* CTA banner */
+    .cta {
+      padding: 28px;
+      border-radius: var(--radius-xl);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .cta::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      background:
+        radial-gradient(700px 260px at 15% 30%, rgba(56, 189, 248, 0.35), transparent 60%),
+        radial-gradient(700px 260px at 85% 40%, rgba(99, 102, 241, 0.32), transparent 60%),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.35), rgba(99, 102, 241, 0.35));
+      filter: blur(10px);
+      opacity: 0.95;
+      pointer-events: none;
+    }
+
+    .cta-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .cta h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    /* Footer */
+    footer {
+      padding: 34px 0 42px;
+      color: var(--muted);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 22px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.72);
+      transition: color 180ms ease;
+    }
+
+    .footer-links a:hover {
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 700ms cubic-bezier(.2, .9, .2, 1), transform 700ms cubic-bezier(.2, .9, .2, 1);
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cards {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      section {
+        padding: 52px 0;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 40px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .btn,
+      .feature,
+      .stat {
+        transition: none;
+      }
+
+      .reveal {
+        transition: none;
+      }
+
+      #moleculeCanvas {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- NAV -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#top" aria-label="ClinicalMatch AI">
+        <div class="logo" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7 3c4 4 6 6 10 10s6 6 0 8" stroke="rgba(255,255,255,0.92)" stroke-width="1.7"
+              stroke-linecap="round" />
+            <path d="M17 3c-4 4-6 6-10 10S1 19 7 21" stroke="rgba(255,255,255,0.92)" stroke-width="1.7"
+              stroke-linecap="round" />
+            <path d="M9 8h6" stroke="rgba(255,255,255,0.7)" stroke-width="1.7" stroke-linecap="round" />
+            <path d="M9 16h6" stroke="rgba(255,255,255,0.7)" stroke-width="1.7" stroke-linecap="round" />
+          </svg>
+        </div>
+        <span>ClinicalMatch AI</span>
+      </a>
+
+      <a class="btn btn-primary" href="/app.html" target="_self" rel="noopener">
+        Get Started <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main id="top" class="hero">
+    <canvas id="moleculeCanvas"></canvas>
+
+    <div class="container hero-grid">
+      <div class="reveal">
+        <div class="kicker">
+          <span class="dot" aria-hidden="true"></span>
+          Privacy-first matching • Fast, explainable results
+        </div>
+
+        <h1>AI-Powered Clinical Trial Matching</h1>
+        <p class="subtitle">
+          Upload your patient dataset, define trial criteria, and let AI find the best matches in seconds.
+        </p>
+
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="/app.html" target="_self" rel="noopener">
+            Get Started <span aria-hidden="true">→</span>
+          </a>
+          <a class="btn btn-outline" href="#how">
+            See How It Works
+          </a>
+        </div>
+      </div>
+
+      <div class="mock glass reveal" aria-label="Mock dashboard screenshot">
+        <div class="mock-inner">
+          <div class="mock-topbar">
+            <div class="traffic" aria-hidden="true">
+              <i></i><i></i><i></i>
+            </div>
+            <div class="mock-title">ClinicalMatch AI • Dashboard Preview</div>
+            <div class="mock-title" aria-hidden="true">v1</div>
+          </div>
+
+          <div class="mock-body">
+            <div class="pill-row">
+              <div class="pill">Patients.csv • 600 rows</div>
+              <div class="pill">Trial Criteria • Uploaded</div>
+              <div class="pill">Matching • Ready</div>
+            </div>
+
+            <div class="cards">
+              <div class="mini">
+                <h4>Eligible Patients</h4>
+                <div class="num grad" style="background-clip:text;-webkit-background-clip:text;color:transparent;">132
+                </div>
+                <div class="hint">Across 2 active protocols</div>
+              </div>
+              <div class="mini">
+                <h4>Accuracy</h4>
+                <div class="num">88%</div>
+                <div class="hint">Validated on labeled sample</div>
+              </div>
+            </div>
+
+            <div class="chart" aria-hidden="true">
+              <svg class="spark" viewBox="0 0 100 40" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#38bdf8" stop-opacity="0.95" />
+                    <stop offset="1" stop-color="#6366f1" stop-opacity="0.95" />
+                  </linearGradient>
+                </defs>
+                <path d="M2,30 C12,28 16,18 26,20 C36,22 40,10 50,12 C60,14 66,26 76,24 C86,22 90,10 98,9" fill="none"
+                  stroke="url(#g)" stroke-width="2.2" stroke-linecap="round" />
+                <path d="M2,32 C12,30 16,20 26,22 C36,24 40,12 50,14 C60,16 66,28 76,26 C86,24 90,12 98,11
+                           L98,40 L2,40 Z" fill="url(#g)" opacity="0.12" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- STATS STRIP -->
+  <section>
+    <div class="container">
+      <div class="stats glass reveal" aria-label="Key stats">
+        <div class="stat">
+          <p class="value"><span class="count" data-target="600" data-suffix="+">0</span></p>
+          <p class="label">Patients Processed</p>
+        </div>
+        <div class="stat">
+          <p class="value"><span class="count" data-target="2" data-suffix="">0</span></p>
+          <p class="label">Trials Matched</p>
+        </div>
+        <div class="stat">
+          <p class="value"><span class="count" data-target="88" data-suffix="%">0</span></p>
+          <p class="label">Accuracy Rate</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="container">
+      <h2 class="section-title reveal">Features built for clinical workflows</h2>
+      <p class="section-subtitle reveal">
+        Move from raw patient exports to trial-ready shortlists with transparent matching and strong evaluation signals.
+      </p>
+
+      <div class="grid-3">
+        <article class="feature glass reveal">
+          <div class="icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M7 17l-3-3 3-3" stroke="rgba(255,255,255,0.92)" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M17 7l3 3-3 3" stroke="rgba(255,255,255,0.92)" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M14 5l-4 14" stroke="rgba(255,255,255,0.72)" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </div>
+          <h3>Upload &amp; Match</h3>
+          <p>Upload patient CSV and trial criteria. AI matches in real-time.</p>
+        </article>
+
+        <article class="feature glass reveal">
+          <div class="icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M7.5 18.5c1.2 1 2.8 1.5 4.5 1.5 4.4 0 8-3.1 8-7s-3.6-7-8-7-8 3.1-8 7c0 1.7.6 3.3 1.6 4.6L5 21l2.5-2.5z"
+                stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M8.5 12h7" stroke="rgba(255,255,255,0.72)" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M8.5 15h4.5" stroke="rgba(255,255,255,0.72)" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </div>
+          <h3>Smart Chatbot</h3>
+          <p>Ask natural language questions about your data — counts, diagnoses, eligibility.</p>
+        </article>
+
+        <article class="feature glass reveal">
+          <div class="icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M4 19V5" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M4 19h16" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M7 16l3-4 3 2 4-6" stroke="rgba(255,255,255,0.72)" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <circle cx="7" cy="16" r="1" fill="rgba(56,189,248,0.9)" />
+              <circle cx="10" cy="12" r="1" fill="rgba(99,102,241,0.9)" />
+              <circle cx="13" cy="14" r="1" fill="rgba(56,189,248,0.9)" />
+              <circle cx="17" cy="8" r="1" fill="rgba(99,102,241,0.9)" />
+            </svg>
+          </div>
+          <h3>KPI Metrics</h3>
+          <p>Instant summary cards — total patients, eligible count, match rate, age pass &amp; precision.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="container">
+      <h2 class="section-title reveal">How it works</h2>
+      <p class="section-subtitle reveal">
+        Three steps from import to export — designed to stay fast, readable, and auditable.
+      </p>
+
+      <div class="steps">
+        <div class="step glass reveal">
+          <div class="num">STEP 01</div>
+          <h3>Upload your Patients CSV</h3>
+          <p>Import patient demographics, diagnoses, labs, and key flags in seconds.</p>
+        </div>
+
+        <div class="step glass reveal">
+          <div class="num">STEP 02</div>
+          <h3>Define or upload Trial Criteria</h3>
+          <p>Add inclusion/exclusion rules as text, structured fields, or a criteria file.</p>
+        </div>
+
+        <div class="step glass reveal">
+          <div class="num">STEP 03</div>
+          <h3>Run Matching &amp; Download Results</h3>
+          <p>Generate ranked matches, eligibility explanations, and exportable reports.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section>
+    <div class="container">
+      <div class="cta reveal">
+        <div class="cta-inner">
+          <h2>Ready to find eligible patients?</h2>
+          <a class="btn btn-primary" href="/app.html" target="_self" rel="noopener">
+            Launch Dashboard <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="brand" aria-label="ClinicalMatch AI">
+          <div class="logo" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 3c4 4 6 6 10 10s6 6 0 8" stroke="rgba(255,255,255,0.92)" stroke-width="1.7"
+                stroke-linecap="round" />
+              <path d="M17 3c-4 4-6 6-10 10S1 19 7 21" stroke="rgba(255,255,255,0.92)" stroke-width="1.7"
+                stroke-linecap="round" />
+              <path d="M9 8h6" stroke="rgba(255,255,255,0.7)" stroke-width="1.7" stroke-linecap="round" />
+              <path d="M9 16h6" stroke="rgba(255,255,255,0.7)" stroke-width="1.7" stroke-linecap="round" />
+            </svg>
+          </div>
+          <span>© 2025 ClinicalMatch AI</span>
+        </div>
+
+        <nav class="footer-links" aria-label="Footer links">
+          <a href="/app.html" target="_self" rel="noopener">Dashboard</a>
+          <a href="#features">Features</a>
+          <a href="#top">Back to Top</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ---- Scroll reveal
+    const revealEls = Array.from(document.querySelectorAll(".reveal"));
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) { e.target.classList.add("show"); io.unobserve(e.target); }
+        });
+      },
+      { threshold: 0.14 }
+    );
+    revealEls.forEach((el) => io.observe(el));
+
+    // ---- Count-up animation
+    const counters = Array.from(document.querySelectorAll(".count"));
+    const animateCount = (el) => {
+      const target = Number(el.dataset.target || "0");
+      const suffix = el.dataset.suffix || "";
+      const duration = 950;
+      const start = performance.now();
+      const step = (t) => {
+        const p = Math.min(1, (t - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = `${Math.round(target * eased)}${suffix}`;
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+
+    const counterIO = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting && !e.target.dataset.animated) {
+            e.target.dataset.animated = "true";
+            animateCount(e.target);
+            counterIO.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.45 }
+    );
+    counters.forEach((c) => counterIO.observe(c));
+
+    // ---- Molecular particle network
+    const canvas = document.getElementById("moleculeCanvas");
+    const ctx = canvas.getContext("2d");
+    const DPR = Math.min(2, window.devicePixelRatio || 1);
+    let W = 0, H = 0, nodes = [];
+
+    const rand = (a, b) => Math.random() * (b - a) + a;
+
+    const makeNodes = () => {
+      const count = Math.max(28, Math.floor(W * H * (W < 720 ? 0.00009 : 0.000065)));
+      nodes = Array.from({ length: count }, () => ({
+        x: rand(0, W), y: rand(0, H),
+        vx: rand(-0.22, 0.22), vy: rand(-0.18, 0.18),
+        r: rand(1.2, 2.3), tint: Math.random() > 0.5 ? "A" : "B"
+      }));
+    };
+
+    const resize = () => {
+      W = window.innerWidth;
+      H = Math.max(520, window.innerHeight * 0.92);
+      canvas.style.width = W + "px"; canvas.style.height = H + "px";
+      canvas.width = Math.floor(W * DPR); canvas.height = Math.floor(H * DPR);
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      makeNodes();
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+      const maxDist = W < 720 ? 95 : 125;
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b = nodes[j];
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const d = Math.hypot(dx, dy);
+          if (d < maxDist) {
+            const alpha = 1 - d / maxDist;
+            ctx.strokeStyle = (a.tint === "A" || b.tint === "A")
+              ? `rgba(56,189,248,${0.16 * alpha})` : `rgba(99,102,241,${0.14 * alpha})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          }
+        }
+      }
+      for (const n of nodes) {
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 3.2, 0, Math.PI * 2);
+        ctx.fillStyle = n.tint === "A" ? "rgba(56,189,248,0.22)" : "rgba(99,102,241,0.20)";
+        ctx.fill();
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = n.tint === "A" ? "rgba(56,189,248,0.85)" : "rgba(99,102,241,0.85)";
+        ctx.fill();
+      }
+    };
+
+    const tick = () => {
+      for (const n of nodes) {
+        n.x += n.vx; n.y += n.vy;
+        if (n.x < -10) n.x = W + 10; if (n.x > W + 10) n.x = -10;
+        if (n.y < -10) n.y = H + 10; if (n.y > H + 10) n.y = -10;
+      }
+      draw();
+      requestAnimationFrame(tick);
+    };
+
+    window.addEventListener("resize", resize, { passive: true });
+    resize();
+    tick();
+  </script>
+</body>
+
+</html>

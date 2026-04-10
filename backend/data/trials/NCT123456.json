@@ -1,0 +1,13 @@
+{
+  "id": "NCT123456",
+  "title": "Sample Trial",
+  "inclusion_keywords": [
+    "asthma",
+    "wheezing"
+  ],
+  "exclusion_keywords": [
+    "pregnancy"
+  ],
+  "age_min": 18,
+  "age_max": 70
+}

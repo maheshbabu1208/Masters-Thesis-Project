@@ -1,0 +1,19 @@
+{
+  "id": "NCT00167752",
+  "title": "Psychiatric Problems in Chronic Skin Diseases",
+  "inclusion_keywords": [
+    "psoriasis",
+    "acne",
+    "vitiligo",
+    "atopic dermatitis",
+    "pruritic dermatitis"
+  ],
+  "exclusion_keywords": [
+    "pregnancy",
+    "severe cardiac disease"
+  ],
+  "age_min": 18,
+  "age_max": 100,
+  "source": "csv_upload",
+  "upload_date": "2026-03-29T18:10:24.591584"
+}
