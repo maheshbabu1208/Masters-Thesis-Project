@@ -1,10 +1,10 @@
 # 🧬 AI-Driven Clinical Trial Patient Matching Engine
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com)
 [![AI/ML](https://img.shields.io/badge/AI%2FML-LLM%20%7C%20NLP-orange)](#)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com)
+[![SQLite](https://img.shields.io/badge/SQLite-3-blue.svg)](https://www.sqlite.org/)
 [![React](https://img.shields.io/badge/React-18.2-61DAFB.svg)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-4.0-646CFF.svg)](https://vitejs.dev/)
 
 > **A high-performance semantic matching engine leveraging Large Language Models (LLMs) and NLP to accurately match patients with relevant clinical trials.**
 
